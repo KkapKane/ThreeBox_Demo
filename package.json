@@ -9,12 +9,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@loaders.gl/gltf": "^2.3.1",
+    "deck.gl": "^8.9.4",
+    "loaders.gl": "^0.3.5",
+    "mapbox-gl": "^2.13.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-map-gl": "^7.0.21",
+    "sass": "^1.60.0",
+    "three": "^0.150.1",
+    "threebox": "^0.1.5",
+    "threebox-plugin": "^2.2.7"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/three": "^0.149.0",
     "@vitejs/plugin-react": "^3.1.0",
     "typescript": "^4.9.3",
     "vite": "^4.2.0"

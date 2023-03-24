@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+
+import "./style.scss";
+import { Map } from "react-map-gl";
+import DeckGL from "@deck.gl/react/typed";
+import Test from "./Test";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const MAPBOX_ACCESS_TOKEN: string =
+    "pk.eyJ1Ijoia2thcGthbmUiLCJhIjoiY2xlcWhnempoMGlvNjNxbnE0YW1uMnk3eSJ9.QAV9riOpCHAsq4esfkqdDw";
+
+  const INITIAL_VIEW_STATE = {
+    latitude: 37.716351775,
+    longitude: -122.47920912,
+    zoom: 20,
+    bearing: 0,
+    pitch: 30,
+  };
+
+  const Styles = {
+    Street: "mapbox://styles/mapbox/streets-v12",
+    OutDoor: "mapbox://styles/mapbox/outdoors-v12",
+    Light: "mapbox://styles/mapbox/light-v11",
+    Dark: "mapbox://styles/mapbox/dark-v11",
+    Satellite: "mapbox://styles/mapbox/satellite-v9",
+    StreetSatellite: "mapbox://styles/mapbox/satellite-streets-v12",
+    NavigationDay: "mapbox://styles/mapbox/navigation-day-v1",
+    NavigationNight: "mapbox://styles/mapbox/navigation-night-v1",
+  };
+
+
+
+  
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+   
+
+    
+      <Test/>
+   
+  );
 }
 
-export default App
+export default App;
