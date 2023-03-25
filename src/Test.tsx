@@ -4,6 +4,9 @@ import mapboxgl from "mapbox-gl";
 
 
 const Test = () => {
+
+
+
 mapboxgl.accessToken =
   "pk.eyJ1Ijoia2thcGthbmUiLCJhIjoiY2xlcWhrOHpnMDRnZjNycTZkYTc3anMxMiJ9.CAQOno2NIvAsyP5EgfySDA";
   
@@ -40,7 +43,7 @@ mapboxgl.accessToken =
             rotation: { x: 90, y: 0, z: 0 }, //default rotation
           };
 
-          window.tb.loadObj(options, function (model) {
+          window.tb.loadObj(options, function (model: any) {
             soldier = model.setCoords(origin);
             window.tb.add(soldier);
           });
