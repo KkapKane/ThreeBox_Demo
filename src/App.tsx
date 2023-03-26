@@ -3,7 +3,7 @@ import "./style.scss";
 import { Map } from "react-map-gl";
 import DeckGL from "@deck.gl/react/typed";
 import Test from "./Test";
-import {useRef , useCallback} from 'react'
+import {useRef , useCallback, useEffect, useState} from 'react'
 import React from "react";
 
 
@@ -12,7 +12,6 @@ function App() {
 
   const MAPBOX_ACCESS_TOKEN: string =
     "pk.eyJ1Ijoia2thcGthbmUiLCJhIjoiY2xlcWhnempoMGlvNjNxbnE0YW1uMnk3eSJ9.QAV9riOpCHAsq4esfkqdDw";
-  let soldier, soldier2, tb;
   const INITIAL_VIEW_STATE = {
     latitude: 37.716359356131875,
     longitude: -122.47919996813236,
@@ -32,56 +31,92 @@ function App() {
     NavigationNight: "mapbox://styles/mapbox/navigation-night-v1",
   };
 
-const origin: [number, number] = [-96.89169896977438, 38.32003804321502];
-
+  const origin: [number, number] = [-96.89169896977438, 38.32003804321502];
+  
+  
+  
   const onMapLoad = useCallback(() => {
+    let stats;
+    let items = 5;
+    let minZoom = 16;
+    let maxZoom = 18;
+    let zoomStep = (maxZoom - minZoom) / 5;
+    let toggleableLayerIds: any = [];
     if (!mapRef.current) return;
-    const map = mapRef.current.getMap();
+    var map = mapRef.current.getMap();
 
-    map.on('click', (e: any) => {
+    map.on("click", (e: any) => {
       var coordinates = e.lngLat;
-      console.log(coordinates)
-    })
-    
-    map.addLayer({
-      id: "custom_layer",
-      type: "custom",
-      center: origin,
-      renderingMode: "3d",
-      antialias: true,
-      onAdd: function (map: any, mbxContext: any) {
-        window.tb = new Threebox(map, mbxContext, { defaultLights: true, multiLayer: true });
-
-        const options = {
-          obj: "centeredTree.glb",
-          type: "glb",
-          scale: 100000,
-          units: "meters",
-          rotation: { x: 90, y: 180, z: 0 }, //default rotation
-          anchor: 'center'
-        };
-
-        window.tb.loadObj(options, function (model: any) {
-          soldier = model.setCoords(origin);
-
-          // window.tb.lights.dirLight.target = model;
-          window.tb.add(soldier);
-
-          console.log(model);
-        });
-      },
-
-      render: function () {
-        window.tb.update();
-      },
+      console.log(coordinates);
     });
+
+    window.tb = new Threebox(map, map.getCanvas().getContext("webgl"), {
+      defaultLights: true,
+      enableSelectingObjects: true,
+      enableTooltips: true,
+      multiLayer: true, // this will create a default custom layer that will manage a single tb.update
+    });
+
+    for (let j = 1; j <= items; j++) {
+      let l = {
+        layer: "3d-model" + j,
+        origin: [-96.89169896977438, 38.32003804321502 + j * 2],
+      };
+      toggleableLayerIds.push(l);
+    }
+
+     let i = 0;
+     toggleableLayerIds.forEach((l: any) => {
+       i++;
+       map.addLayer(createCustomLayer(l.layer, l.origin), "waterway-label");
+      
+       
+     });
+
+
+      function createCustomLayer(layerId: any, origin: any) {
+        //create the layer
+        let customLayer3D = {
+          id: layerId,
+          type: "custom",
+          renderingMode: "3d",
+          onAdd: function (map: any, gl: any) {
+            addModel(layerId, origin);
+          },
+          render: function (gl: any, matrix: any) {
+            window.tb.update();
+            //tb.update(); is not needed anymore if multiLayer : true
+          },
+        };
+        return customLayer3D;
+      }
+
+      function addModel(layerId: any, origin: any) {
+        console.log(toggleableLayerIds)
+        let options = {
+          obj: "centeredTree.glb", //model url
+          type: "glb",
+          units: "meters", //units in the default values are always in meters
+          scale: 10000,
+          rotation: { x: 90, y: 0, z: 0 }, //default rotation
+          anchor: "center",
+        };
+        window.tb.loadObj(options, function (model: any) {
+          model.setCoords(origin);
+          let l = map.getLayer(layerId);
+          console.log(model)
+          window.tb.add(model, layerId);
+        });
+      }
+
   }, []);
 
 
+ 
 
   return (
     <Map
-    antialias={true}
+      antialias={true}
       ref={mapRef}
       mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
       initialViewState={INITIAL_VIEW_STATE}
